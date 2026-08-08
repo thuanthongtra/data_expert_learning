@@ -1,0 +1,9 @@
+command:
+  - streamlit
+  - run
+  - streamlit_app.py
+env:
+  - name: LAKEBASE_CONNECTION_STRING
+    valueFrom: lakebase_connection_string
+  - name: STREAMLIT_GATHER_USAGE_STATS
+    value: "false"
