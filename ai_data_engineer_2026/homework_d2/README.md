@@ -10,6 +10,7 @@ Why:
 - free
 - no API key
 - rich narrative text in alerts and forecasts
+- includes area forecast discussions for longer-form retrieval content
 
 ## Schema
 
@@ -19,12 +20,13 @@ Why:
 - `weather_embeddings`
   - chunked text embeddings
   - `vector(384)` using `sentence-transformers/all-MiniLM-L6-v2`
+  - HNSW cosine index for search
 
 ## End-to-end flow
 
 1. `POST /weather/sync`
    - input: `{"locations": ["Chicago, IL", "Austin, TX"], "limit": 50}`
-   - fetches NWS alerts/forecast text
+   - fetches NWS alerts, forecasts, and forecast discussions
    - upserts into `weather_documents`
 2. `python notebooks/ingest_weather_embeddings.py`
    - reads unembedded docs
@@ -33,6 +35,14 @@ Why:
 3. `POST /weather/search`
    - input: `{"query": "flash flood risk this weekend", "top_k": 5}`
    - embeds query and runs pgvector cosine search
+
+## Secret setup
+
+Use `setup_secrest.py` to create the `database` scope and store the Lakebase connection string under `lakebase_connection_string`.
+
+Local override:
+
+- `LAKEBASE_CONNECTION_STRING`
 
 ## Notes
 
