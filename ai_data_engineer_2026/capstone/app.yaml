@@ -1,0 +1,17 @@
+command:
+  - "python"
+  - "-m"
+  - "real_estate_app.app"
+
+resources:
+  - name: requirements
+    source:
+      path: ./requirements.txt
+
+env:
+  - name: LAKEBASE_SECRET_SCOPE
+    value: "database"
+  - name: LAKEBASE_SECRET_KEY
+    value: "lakebase_connection_string"
+  - name: REAL_ESTATE_SCHEMA
+    value: "realestate"

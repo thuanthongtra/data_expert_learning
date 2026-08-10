@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ area.name }} - North York Real Estate Copilot</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; background: #f3f6fb; color: #122033; }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+      .card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(18,32,51,0.08); margin-bottom: 20px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+      ul { padding-left: 18px; margin: 8px 0 0; }
+      .muted { color: #607080; }
+      a { color: #1c5fd4; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <h1>{{ area.name }}</h1>
+        <p class="muted">{{ area.display_name }}</p>
+        <p class="muted">Boundary loaded: {% if area.boundary_geojson %}yes{% else %}no{% endif %}</p>
+        <p><a href="/">Back to home</a></p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Schools</h2>
+          <ul>{% for row in schools %}<li>{{ row.name }}</li>{% else %}<li>No data yet.</li>{% endfor %}</ul>
+        </div>
+        <div class="card">
+          <h2>Transit</h2>
+          <ul>{% for row in transit_stations %}<li>{{ row.name }}</li>{% else %}<li>No data yet.</li>{% endfor %}</ul>
+        </div>
+        <div class="card">
+          <h2>Parks</h2>
+          <ul>{% for row in parks %}<li>{{ row.name }}</li>{% else %}<li>No data yet.</li>{% endfor %}</ul>
+        </div>
+        <div class="card">
+          <h2>Amenities</h2>
+          <ul>{% for row in amenities %}<li>{{ row.name }}</li>{% else %}<li>No data yet.</li>{% endfor %}</ul>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Demographics</h2>
+          <ul>{% for row in demographics %}<li>{{ row.metric_name }}: {{ row.metric_value }}</li>{% else %}<li>No data yet.</li>{% endfor %}</ul>
+        </div>
+        <div class="card">
+          <h2>Crime</h2>
+          <ul>{% for row in crime %}<li>{{ row.event_type }}{% if row.occurred_at %} - {{ row.occurred_at }}{% endif %}</li>{% else %}<li>No data yet.</li>{% endfor %}</ul>
+        </div>
+        <div class="card">
+          <h2>Developments</h2>
+          <ul>{% for row in developments %}<li>{{ row.title }}</li>{% else %}<li>No data yet.</li>{% endfor %}</ul>
+        </div>
+        <div class="card">
+          <h2>Zoning</h2>
+          <ul>{% for row in zoning %}<li>{{ row.zone_code }}{% if row.zone_label %} - {{ row.zone_label }}{% endif %}</li>{% else %}<li>No data yet.</li>{% endfor %}</ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Phase 2 Coverage</h2>
+        <ul>
+          <li>Listings: pending source confirmation for legal/free ingestion.</li>
+          <li>Transactions: pending source confirmation for legal/free ingestion.</li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

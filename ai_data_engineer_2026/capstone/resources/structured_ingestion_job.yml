@@ -1,0 +1,8 @@
+resources:
+  jobs:
+    structured_real_estate_ingestion:
+      name: structured_real_estate_ingestion
+      tasks:
+        - task_key: ingest_structured
+          spark_python_task:
+            python_file: ./notebooks/ingest_structured_real_estate_data.py

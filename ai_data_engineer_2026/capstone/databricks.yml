@@ -1,0 +1,61 @@
+bundle:
+  name: north_york_real_estate_capstone
+
+resources:
+  apps:
+    real_estate_flask_ui:
+      name: "north-york-real-estate-ui"
+      description: "North York real estate Flask UI"
+      source_code_path: ./
+      config:
+        command: ["python", "-m", "real_estate_app.app"]
+        env:
+          - name: LAKEBASE_SECRET_SCOPE
+            value: "database"
+          - name: LAKEBASE_SECRET_KEY
+            value: "lakebase_connection_string"
+          - name: REAL_ESTATE_SCHEMA
+            value: "realestate"
+    real_estate_mcp:
+      name: "north-york-real-estate-mcp"
+      description: "North York real estate MCP server"
+      source_code_path: ./
+      config:
+        command: ["python", "-m", "mcp_server.real_estate_mcp_server"]
+        env:
+          - name: LAKEBASE_SECRET_SCOPE
+            value: "database"
+          - name: LAKEBASE_SECRET_KEY
+            value: "lakebase_connection_string"
+          - name: REAL_ESTATE_SCHEMA
+            value: "realestate"
+  jobs:
+    structured_real_estate_ingestion:
+      name: structured_real_estate_ingestion
+      tasks:
+        - task_key: ingest_structured
+          spark_python_task:
+            python_file: ./notebooks/ingest_structured_real_estate_data.py
+    market_document_ingestion:
+      name: market_document_ingestion
+      tasks:
+        - task_key: ingest_documents
+          spark_python_task:
+            python_file: ./notebooks/ingest_market_documents.py
+    market_embeddings_build:
+      name: market_embeddings_build
+      tasks:
+        - task_key: build_embeddings
+          spark_python_task:
+            python_file: ./notebooks/build_market_embeddings.py
+    real_estate_analytics_refresh:
+      name: real_estate_analytics_refresh
+      tasks:
+        - task_key: refresh_analytics
+          spark_python_task:
+            python_file: ./notebooks/build_analytics_tables.py
+
+targets:
+  dev:
+    mode: development
+    default: true

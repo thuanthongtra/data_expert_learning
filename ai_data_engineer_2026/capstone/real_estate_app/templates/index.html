@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>North York Real Estate Copilot</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; background: #f3f6fb; color: #122033; }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+      .card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(18,32,51,0.08); margin-bottom: 20px; }
+      h1, h2, h3 { margin-top: 0; }
+      form { display: grid; gap: 12px; }
+      textarea, input { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid #d5deea; border-radius: 10px; }
+      button { width: fit-content; border: none; border-radius: 10px; padding: 12px 18px; background: #1c5fd4; color: #fff; font-weight: 600; cursor: pointer; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+      .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); gap: 20px; align-items: start; }
+      .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; background: #e8f0ff; color: #1c5fd4; font-weight: 700; font-size: 13px; }
+      .match { border: 1px solid #e3e9f2; border-radius: 14px; padding: 16px; margin-top: 14px; }
+      ul { padding-left: 18px; }
+      .muted { color: #607080; }
+      a { color: #1c5fd4; text-decoration: none; }
+      @media (max-width: 900px) {
+        .hero-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="card">
+          <h1>North York Real Estate Copilot</h1>
+          <p class="muted">Search structured neighborhood context and semantically search market documents stored in Lakebase.</p>
+          <form method="post" action="/">
+            <label for="query">Ask a question</label>
+            <textarea id="query" name="query" rows="4" placeholder="Example: Which North York neighborhoods have strong transit access and lots of parks?">{{ query }}</textarea>
+            <label for="top_k">Top K</label>
+            <input id="top_k" name="top_k" type="number" min="1" max="20" value="{{ top_k }}">
+            <button type="submit">Search documents</button>
+          </form>
+        </div>
+
+        {% if matches %}
+        <div class="card">
+          <h2>Document Matches</h2>
+          {% for match in matches %}
+          <div class="match">
+            <span class="pill">{{ match.similarity_percent }}% match</span>
+            <h3>{{ match.title }}</h3>
+            <p><strong>Area:</strong> {{ match.area_slug or "general" }}</p>
+            <p><strong>Source:</strong> <a href="{{ match.source_url }}" target="_blank">{{ match.publisher or match.source_url }}</a></p>
+            <p>{{ match.chunk_text }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="card">
+        <h2>Bootstrap</h2>
+        <p class="muted">Run the first data sync manually for local testing.</p>
+        <form method="post" action="/sync/bootstrap">
+          <button type="submit">Run bootstrap sync</button>
+        </form>
+        {% if sync_result %}
+        <p><strong>Last sync:</strong> {{ sync_result }}</p>
+        {% endif %}
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Live Source Coverage</h2>
+          <ul>
+            {% for key, value in source_status.civic_sources.items() %}
+            <li>{{ key }}: {% if value %}configured{% else %}not configured{% endif %}</li>
+            {% endfor %}
+            <li>market documents: {{ source_status.market_document_count }} configured</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>Phase 2 Data</h2>
+          <ul>
+            <li>listings: {{ phase_two_status.listings.message }}</li>
+            <li>transactions: {{ phase_two_status.transactions.message }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Current Row Counts</h2>
+        <div class="grid">
+          {% for key, value in sync_status.items() %}
+          <div class="match">
+            <h3>{{ key }}</h3>
+            <p>{{ value }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Analytics Metrics</h2>
+        <div class="grid">
+          {% for row in analytics_metrics %}
+          <div class="match">
+            <h3>{{ row.metric_key }}</h3>
+            <p>{{ row.metric_value }}</p>
+          </div>
+          {% else %}
+          <p class="muted">No analytics metrics yet. Run the analytics notebook after ingestion.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Neighborhoods</h2>
+        <p><a href="/compare">Compare two areas</a></p>
+        <div class="grid">
+          {% for area in neighbourhoods %}
+          <div class="match">
+            <span class="pill">{{ area.city }}</span>
+            <h3><a href="/areas/{{ area.slug }}">{{ area.name }}</a></h3>
+            <p class="muted">{{ area.display_name }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+resources:
+  jobs:
+    market_embeddings_build:
+      name: market_embeddings_build
+      tasks:
+        - task_key: build_embeddings
+          spark_python_task:
+            python_file: ./notebooks/build_market_embeddings.py

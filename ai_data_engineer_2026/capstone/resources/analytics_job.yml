@@ -1,0 +1,8 @@
+resources:
+  jobs:
+    real_estate_analytics_refresh:
+      name: real_estate_analytics_refresh
+      tasks:
+        - task_key: refresh_analytics
+          spark_python_task:
+            python_file: ./notebooks/build_analytics_tables.py

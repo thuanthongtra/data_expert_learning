@@ -1,0 +1,8 @@
+resources:
+  jobs:
+    market_document_ingestion:
+      name: market_document_ingestion
+      tasks:
+        - task_key: ingest_documents
+          spark_python_task:
+            python_file: ./notebooks/ingest_market_documents.py

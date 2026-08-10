@@ -1,0 +1,9 @@
+Flask>=3.0.0
+requests>=2.32.0
+beautifulsoup4>=4.12.0
+sentence-transformers>=3.0.0
+psycopg2-binary>=2.9.9
+databricks-sdk>=0.118.0
+pgvector>=0.3.2
+sqlalchemy>=2.0.0
+fastmcp>=2.0.0
